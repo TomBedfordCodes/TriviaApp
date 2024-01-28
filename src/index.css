@@ -2,13 +2,18 @@
     box-sizing: border-box;
 }
 
-body, html {
+html {
+    height: 100%;
+}
+
+body {
     margin: 0;
     background-color: #F5F7FB;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
+    align-items: center;
     font-family: 'Inter', sans-serif;
     /* background: linear-gradient(135deg, 
                             #DEEBF8 0%, #DEEBF8 10%, 
@@ -17,18 +22,22 @@ body, html {
     background-repeat: no-repeat; */
 }
 
-.blob-topright {
+/* .blob-topright {
     position: fixed;
     top: 0;
     right: 0;
     z-index: 0;
-}
+} */
 
-.blob-bottomleft {
+/* .blob-bottomleft {
     position: fixed;
     bottom: 0;
     left: 0;
     z-index: 0;
+} */
+
+#root {
+    margin: auto;
 }
 
 button {
@@ -52,6 +61,8 @@ button:active {
 
 
 
+
+
 /* START SCREEN */
 
 
@@ -60,8 +71,8 @@ button:active {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 0 2.5em;
     text-align: center;
+    margin: auto 2.5em;
 }
 
 h1 {
@@ -96,10 +107,12 @@ h2 {
 }
 
 .quiz--container {
-    position: absolute;
-    z-index: 1;
-    top:0;
-    left:0;
+    /* position: absolute; */
+    /* z-index: 1; */
+    /* top:0;
+    left:0; */
+    display: flex;
+    flex-direction: column;
     padding: 1em 2.5em;
 }
 
@@ -136,16 +149,38 @@ h2 {
     background-color: #e8ecff;
 }
 
+
+
+/* Footer */
+
 .checkanswers--btn {
     display: block;
     margin: 2em auto 1em;
     padding: 1em 3em;
 }
 
+.marking--footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em;
+    margin: 1.5em .25em 0.5em .25em;
+}
 
+.marking--btn {
+    padding: 1em 2em;
+    min-width: fit-content;
+}
 
+.marking--score {
+    font-weight: bold;
+}
 
-
+.warning--text {
+    color: rgb(186, 33, 33);
+    font-weight: bold;
+    font-size: .95rem;
+}
 
 
 
@@ -175,6 +210,14 @@ h2 {
         padding: 0.75em 2em 1.7em;
         height: 30px;
     }
+
+    .marking--footer {
+        gap: 2em;
+    }
+
+    .marking--btn {
+        padding: 1em 3em;
+    }
 }
 
 
@@ -191,6 +234,16 @@ h2 {
 
     .quiz--container {
         padding: 1em 10.5em;
+    }
+
+    .marking--footer {
+        gap: 4.5em;
+        margin-left: 2em;
+        justify-content: start;
+    }
+
+    .marking--btn {
+        padding: 1em 3em;
     }
 }
 

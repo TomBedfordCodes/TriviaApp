@@ -13,9 +13,9 @@ export default function App() {
 
   return (
     <div>
-      {gameStarted ? <QuizScreen />: <StartScreen handleBtnClick={startGame} />}
-      <img src="/blob1.png" className="blob-topright"/>
-      <img src="/blob2.png" className="blob-bottomleft"/>
+      {gameStarted ? <QuizScreen /> : <StartScreen handleBtnClick={startGame} />}
+      {/* <img src="/blob1.png" className="blob-topright"/>
+      <img src="/blob2.png" className="blob-bottomleft"/> */}
     </div>
   )
 }

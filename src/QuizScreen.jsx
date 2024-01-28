@@ -7,13 +7,15 @@ import { decode } from 'html-entities'
 
 export default function QuizScreen() {
 
+    const [correctAnswerCount, setCorrectAnswerCount] = React.useState(0)
+    const [showWarning, setShowWarning] = React.useState(false)
+
     const [questionsData, setQuestionsData] = React.useState([])
     const [isMarking, setIsMarking] = React.useState(false)
 
     const [questionsAndAnswers, setQuestionsAndAnswers] = React.useState([])
     // questionsAndAnswers array format:
-    // [
-    //     {
+    // [   {
     //         question: x.question,
     //         answers: [
                 // {
@@ -24,8 +26,7 @@ export default function QuizScreen() {
                 // },
     //         ],
     //         correctAnswer: x.correct_answer
-    //     },
-    // ]
+    // },   ]
 
     
     // Get trivia data from API
@@ -33,7 +34,7 @@ export default function QuizScreen() {
         if (isMarking) {
             return
         }
-        fetch("https://opentdb.com/api.php?amount=5&type=multiple")
+        fetch("https://opentdb.com/api.php?amount=5&category=9&type=multiple")
             .then(res => res.json())
             .then(data => setQuestionsData(data.results))
             .catch(e => {
@@ -95,25 +96,70 @@ export default function QuizScreen() {
         })
     }
 
-
-
-
-
+    // When the Check Answers button is click, ensure all Qs have an answer selected, then score them
     function checkAnswers() {
-        setIsMarking(true)
+        let tempCount = 0
         for (let qAndAObj of questionsAndAnswers) {
-            
+            let noneSelected = true
+            for (let ans of qAndAObj.answers) {
+                if (!ans.isSelected) {
+                    continue
+                }
+                noneSelected = false
+                if (qAndAObj.correctAnswer === ans.answer) {
+                    tempCount += 1
+                    // turn answer green
+                } else {
+                    // turn answer red
+                }
+
+                // Btns states:
+                    // - are we marking or not? (pass them this state as a prop)
+                    // - whether answer is correct (green color, bold text)
+                    // - isSelected and answer incorrect (red color, faded text)
+                    // - all others; not selected, not correct (faded text)
+
+            }
+            // if an answer isn't selected for any question, show warning div and stop checking
+            if (noneSelected) {
+                setShowWarning(true)
+                return
+            }
         }
+        setCorrectAnswerCount(tempCount)
+        setIsMarking(true)
     }
 
+    // If warning div is shown, start timeout to clear it (returns a timeout cleanup function)
+    React.useEffect(function() {
+        if (!showWarning) {
+            return
+        }
+        const unsubscribe = setTimeout(() => {
+            setShowWarning(false)
+        }, 5000)
+        return () => clearTimeout(unsubscribe)
+    }, [showWarning])
 
 
-
-
+    // JSX COMPONENT
     return (
         <div className="quiz--container">
             {questionElements}
-            {!isMarking && <button className="checkanswers--btn" onClick={checkAnswers}>Check answers</button>}
+            {showWarning &&
+                <div className="marking--footer">
+                    <p className="warning--text">Answer all the questions!</p>
+                </div>
+            }
+            {!isMarking && 
+                <button className="checkanswers--btn" onClick={checkAnswers}>Check answers</button>
+            }
+            {isMarking && 
+                <div className="marking--footer">
+                    <p className="marking--score">You scored {correctAnswerCount}/5 correct answers</p>
+                    <button className="marking--btn">Play again</button>
+                </div>
+            }
         </div>
     )
 }
