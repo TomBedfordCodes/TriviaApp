@@ -12,6 +12,8 @@ export default function QuestionSection(props) {
                 answer={x.answer}
                 isSelected={x.isSelected}
                 handleClick={() => props.handleClick(x.questionNumber, x.id)}
+                isMarking={props.isMarking}
+                isCorrect={props.correctAnswer === x.answer}
             />)
     })
     return (

@@ -5,7 +5,7 @@ import { decode } from 'html-entities'
 
 
 
-export default function QuizScreen() {
+export default function QuizScreen(props) {
 
     const [correctAnswerCount, setCorrectAnswerCount] = React.useState(0)
     const [showWarning, setShowWarning] = React.useState(false)
@@ -14,7 +14,7 @@ export default function QuizScreen() {
     const [isMarking, setIsMarking] = React.useState(false)
 
     const [questionsAndAnswers, setQuestionsAndAnswers] = React.useState([])
-    // questionsAndAnswers array format:
+    // QUESTIONSANDANSWERS ARRAY FORMAT
     // [   {
     //         question: x.question,
     //         answers: [
@@ -34,11 +34,21 @@ export default function QuizScreen() {
         if (isMarking) {
             return
         }
+        document.getElementById("checkanswers-btn").disabled = true
         fetch("https://opentdb.com/api.php?amount=5&category=9&type=multiple")
-            .then(res => res.json())
-            .then(data => setQuestionsData(data.results))
+            .then(res => {
+                if (!res.ok) {
+                    throw Error(res.statusText);
+                }
+                return res.json()
+            })      
+            .then(data => {
+                setQuestionsData(data.results)
+                document.getElementById("checkanswers-btn").disabled = false
+            })
             .catch(e => {
-                console.error(e);
+                props.errorHandling()
+                return
             })
     }, [isMarking])
 
@@ -61,7 +71,7 @@ export default function QuizScreen() {
             return ({
                     question: x.question,
                     answers: answersArr,
-                    correctAnswer: x.correct_answer
+                    correctAnswer: decode(x.correct_answer)
                 })
         })
         setQuestionsAndAnswers(newArr)
@@ -76,9 +86,9 @@ export default function QuizScreen() {
                 answers={x.answers}
                 correctAnswer={x.correctAnswer}
                 handleClick={answerSelected}
+                isMarking={isMarking}
                 key={nanoid()}
-            />
-        )
+            />)
     })
 
     // When an answer button is clicked, find it in master array and change isSelected
@@ -90,13 +100,12 @@ export default function QuizScreen() {
                     answer.isSelected = !answer.isSelected
                 } else {
                     answer.isSelected = false
-                }
-            }
+                }}
             return newArr
         })
     }
 
-    // When the Check Answers button is click, ensure all Qs have an answer selected, then score them
+    // When the Check Answers button is clicked, ensure all Qs have an answer selected, then score them
     function checkAnswers() {
         let tempCount = 0
         for (let qAndAObj of questionsAndAnswers) {
@@ -108,17 +117,7 @@ export default function QuizScreen() {
                 noneSelected = false
                 if (qAndAObj.correctAnswer === ans.answer) {
                     tempCount += 1
-                    // turn answer green
-                } else {
-                    // turn answer red
                 }
-
-                // Btns states:
-                    // - are we marking or not? (pass them this state as a prop)
-                    // - whether answer is correct (green color, bold text)
-                    // - isSelected and answer incorrect (red color, faded text)
-                    // - all others; not selected, not correct (faded text)
-
             }
             // if an answer isn't selected for any question, show warning div and stop checking
             if (noneSelected) {
@@ -129,7 +128,7 @@ export default function QuizScreen() {
         setCorrectAnswerCount(tempCount)
         setIsMarking(true)
     }
-
+    
     // If warning div is shown, start timeout to clear it (returns a timeout cleanup function)
     React.useEffect(function() {
         if (!showWarning) {
@@ -142,22 +141,28 @@ export default function QuizScreen() {
     }, [showWarning])
 
 
+    // After marking, play again
+    function playAgain() {
+        setIsMarking(false)
+    }
+
+
     // JSX COMPONENT
     return (
         <div className="quiz--container">
             {questionElements}
             {showWarning &&
                 <div className="marking--footer">
-                    <p className="warning--text">Answer all the questions!</p>
+                    <p className="warning--text">Please answer all the questions!</p>
                 </div>
             }
             {!isMarking && 
-                <button className="checkanswers--btn" onClick={checkAnswers}>Check answers</button>
+                <button id="checkanswers-btn" className="checkanswers--btn" onClick={checkAnswers}>Check answers</button>
             }
             {isMarking && 
                 <div className="marking--footer">
                     <p className="marking--score">You scored {correctAnswerCount}/5 correct answers</p>
-                    <button className="marking--btn">Play again</button>
+                    <button className="playagain--btn" onClick={playAgain}>Play again</button>
                 </div>
             }
         </div>

@@ -49,11 +49,11 @@ button {
     user-select: none;
 }
 
-button:hover {
+button:hover:enabled {
     background: #6273c8;
 }
 
-button:active {
+button:active:enabled {
     background: #485594;
 }
 
@@ -144,7 +144,7 @@ h2 {
     height: 20px;
 }
 
-.answer--btn:hover {
+.answer--btn:hover:enabled {
     border: 0.794239px solid #4D5B9E;
     background-color: #e8ecff;
 }
@@ -159,6 +159,10 @@ h2 {
     padding: 1em 3em;
 }
 
+.checkanswers--btn:disabled {
+    background-color: lightgrey;
+}
+
 .marking--footer {
     display: flex;
     align-items: center;
@@ -167,7 +171,7 @@ h2 {
     margin: 1.5em .25em 0.5em .25em;
 }
 
-.marking--btn {
+.playagain--btn {
     padding: 1em 2em;
     min-width: fit-content;
 }
@@ -180,6 +184,8 @@ h2 {
     color: rgb(186, 33, 33);
     font-weight: bold;
     font-size: .95rem;
+    margin-top: 2em;
+    text-align: center;
 }
 
 
@@ -215,7 +221,7 @@ h2 {
         gap: 2em;
     }
 
-    .marking--btn {
+    .playagain--btn {
         padding: 1em 3em;
     }
 }
@@ -242,7 +248,7 @@ h2 {
         justify-content: start;
     }
 
-    .marking--btn {
+    .playagain--btn {
         padding: 1em 3em;
     }
 }
